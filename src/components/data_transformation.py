@@ -28,10 +28,11 @@ class DataTransformation:
             logging.info("Data Transformation initiated...")
 
             # Define which columns should be ordinal-encoded and which should be scaled
-            categorical_cols = ['Weather_conditions',
-                                'Road_traffic_density', 'City']
-            numerical_cols = ['Delivery_person_Age', 'Delivery_person_Ratings',
-                              'Vehicle_condition', 'multiple_deliveries', 'distance']
+            categorical_cols = ['workclass',
+                                'marital-status', 'occupation','relationship','race','native-country','sex']
+            
+            numerical_cols = ['age', 'fnlwgt',
+                              'education-num', 'occupation', 'capital-gain','capital-loss','hours-per-week']
 
             # Define the custom ranking for each ordinal variable
             Weather_conditions_categories = [
@@ -89,11 +90,11 @@ class DataTransformation:
 
             # creating/drop indpendent and dependent features in train and test df...
 
-            target_column_name = 'Time_taken (min)'
+            target_column_name = 'fiftyplus'
 
             # dropping two very less corelated columns along with target..
             drop_columns = [target_column_name,
-                            'Type_of_order', 'time_diff_minutes']
+                            'education']
 
             train_df.drop(columns=drop_columns, axis=1)
             input_feature_train_df = train_df
