@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OrdinalEncoder, StandardScaler
+from sklearn.preprocessing import OrdinalEncoder, StandardScaler, LabelEncoder
 
 from src.exception import CustomException
 from src.logger import logging
@@ -28,17 +28,20 @@ class DataTransformation:
             logging.info("Data Transformation initiated...")
 
             # Define which columns should be ordinal-encoded and which should be scaled
-            categorical_cols = ['workclass',
-                                'marital-status', 'occupation','relationship','race','native-country','sex']
-            
+            # column list for ordinal ecoding
+            # cat_ordinal_cols = ['workclass']
+            # column list for label encoding
+            # cat_label_cols = ['occupation', 'relationship']
+
+            categorical_cols = ['workclass', 'occupation', 'relationship']
+
+            # column for scaler  encoding
             numerical_cols = ['age', 'fnlwgt',
-                              'education-num', 'occupation', 'capital-gain','capital-loss','hours-per-week']
+                              'education-num', 'capital-gain', 'capital-loss', 'hours-per-week']
 
             # Define the custom ranking for each ordinal variable
-            Weather_conditions_categories = [
-                'Fog', 'Stormy', 'Sandstorms', 'Windy', 'Cloudy', 'Sunny']
-            Road_traffic_density_categories = ['Low', 'Medium', 'High', 'Jam']
-            City_categories = ['Semi-Urban', 'Urban', 'Metropolitian']
+            workclass_categories = [
+                'State-gov', 'Self-emp-not-inc', 'Private', 'Federal-gov', 'Local-gov', 'Jobless', 'Self-emp-inc', 'Without-pay', 'Never-worked']
 
             logging.info("Pipeline Initiated....")
             # Numerical Pipeline
@@ -50,19 +53,38 @@ class DataTransformation:
             )
 
             # Categorigal Pipeline
+            # cat_ord_pipeline = Pipeline(
+            #     steps=[
+            #         ('imputer', SimpleImputer(strategy='most_frequent')),
+            #         ('ordinalencoder', OrdinalEncoder(categories=[
+            #             workclass_categories]), cat_ordinal_cols),
+            #         ('scaler', StandardScaler())
+            #     ]
+            # )
+
+            # cat_lbl_pipeline = Pipeline(
+            #     steps=[
+            #         ('imputer', SimpleImputer(strategy='most_frequent')),
+            #         ('labelencoder', LabelEncoder(), cat_label_cols),
+            #         ('scaler', StandardScaler())
+            #     ]
+            # )
             cat_pipeline = Pipeline(
                 steps=[
                     ('imputer', SimpleImputer(strategy='most_frequent')),
-                    ('ordinalencoder', OrdinalEncoder(categories=[
-                        Weather_conditions_categories, Road_traffic_density_categories, City_categories])),
+                    ('lableencoder', LabelEncoder()),
                     ('scaler', StandardScaler())
                 ]
+
             )
 
-            preprocessor = ColumnTransformer(transformers=[
-                ('num_pipeline', num_pipeline, numerical_cols),
-                ('cat_pipeline', cat_pipeline, categorical_cols)
-            ])
+            # preprocessor = Pipeline(steps=[("categorical_ord", cat_ord_pipeline, cat_ordinal_cols),
+            #                                ("categorical_lbl",
+            #                                 cat_lbl_pipeline, cat_label_cols),
+            #                                ("numerical", num_pipeline, numerical_cols)])
+
+            preprocessor = ColumnTransformer(transformers=[("categorical_lbl", cat_pipeline, categorical_cols),
+                                                           ("numerical", num_pipeline, numerical_cols)])
 
             logging.info("Pipeline Completed..")
 
@@ -88,19 +110,23 @@ class DataTransformation:
 
             preprocessing_obj = self.get_data_transformation_object()  # this fn is within class
 
+            # #trasforming
+            # train_df = preprocessing_obj.fit_transform(train_df)
+            # test_df = preprocessing_obj.fit_transform(test_df)
+
             # creating/drop indpendent and dependent features in train and test df...
 
             target_column_name = 'fiftyplus'
 
             # dropping two very less corelated columns along with target..
             drop_columns = [target_column_name,
-                            'education']
+                            'education', 'sex', 'fnlwgt', 'race', 'marital-status', 'native-country']
 
             train_df.drop(columns=drop_columns, axis=1)
             input_feature_train_df = train_df
             target_feature_train_df = train_df[target_column_name]
 
-            # test_df.drop(columns=drop_columns,axis=1)
+            test_df.drop(columns=drop_columns, axis=1)
             input_feature_test_df = test_df
             target_feature_test_df = test_df[target_column_name]
 

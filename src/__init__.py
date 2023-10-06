@@ -1,1 +1,4 @@
-## this is used to impot
+# this is used to impot
+
+from src import *
+
