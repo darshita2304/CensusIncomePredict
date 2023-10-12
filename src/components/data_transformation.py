@@ -7,6 +7,8 @@ from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler, LabelEncoder
+from sklearn.feature_selection import SelectPercentile, chi2
+import sklearn.preprocessing
 
 from src.exception import CustomException
 from src.logger import logging
@@ -29,47 +31,70 @@ class DataTransformation():
         try:
             logging.info("Data Transformation initiated...")
 
-            # Define which columns should be ordinal-encoded and which should be scaled
-            # column list for ordinal ecoding
-            # cat_ordinal_cols = ['workclass']
-            # column list for label encoding
-            cat_label_cols = ['workclass', 'occupation', 'relationship']
+            # # Define which columns should be ordinal-encoded and which should be scaled
+            # # column list for ordinal ecoding
+            # # cat_ordinal_cols = ['workclass']
+            # # column list for label encoding
+            # cat_label_cols = ['workclass', 'occupation', 'relationship']
 
-            # column for scaler  encoding
-            numerical_cols = ['age', 'fnlwgt',
-                              'education-num', 'capital-gain', 'capital-loss', 'hours-per-week']
+            # # column for scaler  encoding
+            # numerical_cols = ['age', 'fnlwgt',
+            #                   'education-num', 'capital-gain', 'capital-loss', 'hours-per-week']
 
-            # Define the custom ranking for each ordinal variable
-            # workclass_categories = [
-            # 'State-gov', 'Self-emp-not-inc', 'Private', 'Federal-gov', 'Local-gov', 'Jobless', 'Self-emp-inc', 'Without-pay', 'Never-worked']
+            # # Define the custom ranking for each ordinal variable
+            # # workclass_categories = [
+            # # 'State-gov', 'Self-emp-not-inc', 'Private', 'Federal-gov', 'Local-gov', 'Jobless', 'Self-emp-inc', 'Without-pay', 'Never-worked']
 
-            logging.info("Pipeline Initiated....")
-            # Numerical Pipeline
-            num_pipeline = Pipeline(
+            # logging.info("Pipeline Initiated....")
+            # # Numerical Pipeline
+            # num_pipeline = Pipeline(
+            #     steps=[
+            #         ('imputer', SimpleImputer(strategy='median'), numerical_cols)
+            #     ]
+            # )
+            # # cat_ord_pipeline = Pipeline(steps=[
+            # #     ('ordinalimputer', OrdinalEncoder(
+            # #         categories=[workclass_categories]), cat_ordinal_cols)
+            # # ])
+
+            # cat_pipeline = Pipeline(
+            #     steps=[('lableencoder', OneHotEncoder(
+            #         handle_unknown="ignore"), cat_label_cols)]
+
+            # )
+            # scale_pipeline = Pipeline(steps=[('scale', StandardScaler())])
+
+            # # preprocessor = Pipeline(steps=[("categorical_ord", cat_ord_pipeline, cat_ordinal_cols),
+            # #                                ("categorical_lbl",
+            # #                                 cat_lbl_pipeline, cat_label_cols),
+            # #                                ("numerical", num_pipeline, numerical_cols)])
+
+            # preprocessor = ColumnTransformer(transformers=[("num_pipeline", num_pipeline),
+            #                                                ("cat_pipeline",
+            #                                                 cat_pipeline),
+            #                                                ("scale_pipeline", scale_pipeline)])
+
+            numeric_features = ['age', 'fnlwgt', 'education-num',
+                                'capital-gain', 'capital-loss', 'hours-per-week']
+            numeric_transformer = Pipeline(
+                steps=[("imputer", SimpleImputer(strategy="median")),
+                       ("scaler", StandardScaler())]
+            )
+
+            categorical_features = ['workclass', 'occupation', 'relationship']
+            categorical_transformer = Pipeline(
                 steps=[
-                    ('imputer', SimpleImputer(strategy='median'), numerical_cols)
+                    ("encoder", OneHotEncoder(handle_unknown="ignore")),
+                    ("scaler", SelectPercentile(chi2, percentile=50)),
                 ]
             )
-            # cat_ord_pipeline = Pipeline(steps=[
-            #     ('ordinalimputer', OrdinalEncoder(
-            #         categories=[workclass_categories]), cat_ordinal_cols)
-            # ])
 
-            cat_pipeline = Pipeline(
-                steps=[('lableencoder', OneHotEncoder(
-                    handle_unknown="ignore"), cat_label_cols)]
-
+            preprocessor = ColumnTransformer(
+                transformers=[
+                    ("num", numeric_transformer, numeric_features),
+                    ("cat", categorical_transformer, categorical_features),
+                ]
             )
-            scale_pipeline = Pipeline(steps=[('scale', StandardScaler())])
-
-            # preprocessor = Pipeline(steps=[("categorical_ord", cat_ord_pipeline, cat_ordinal_cols),
-            #                                ("categorical_lbl",
-            #                                 cat_lbl_pipeline, cat_label_cols),
-            #                                ("numerical", num_pipeline, numerical_cols)])
-
-            preprocessor = ColumnTransformer(transformers=[("num_pipeline", num_pipeline),
-                                                           ("cat_pipeline",cat_pipeline),
-                                                           ("scale_pipeline", scale_pipeline)])
 
             logging.info("Pipeline Completed..")
 
@@ -93,7 +118,7 @@ class DataTransformation():
 
             logging.info('Obtaining preprocessing object')
 
-            preprocessing_obj = self.get_data_transformation_object()  # this fn is within class
+            preprocessor = self.get_data_transformation_object()  # this fn is within class
 
             target_column_name = 'fiftyplus'
 
@@ -101,34 +126,36 @@ class DataTransformation():
             drop_columns = [target_column_name,
                             'education', 'sex', 'fnlwgt', 'race', 'marital-status', 'native-country']
 
+            target_feature_train_df = train_df[target_column_name]
             train_df.drop(columns=drop_columns, axis=1)
             input_feature_train_df = train_df
-            target_feature_train_df = train_df[target_column_name]
 
+            target_feature_test_df = test_df[target_column_name]
             test_df.drop(columns=drop_columns, axis=1)
             input_feature_test_df = test_df
-            target_feature_test_df = test_df[target_column_name]
 
             # Trnasformating using preprocessor obj
-            print(preprocessing_obj)
+            # print(input_feature_train_df)
 
-            input_feature_train_arr = preprocessing_obj.fit_transform(input_feature_train_df)
-            input_feature_test_arr = preprocessing_obj.transform(input_feature_test_df)
+            input_feature_train_arr = preprocessor.fit_transform(
+                input_feature_train_df, target_feature_train_df)
+            input_feature_test_arr = preprocessor.transform(
+                input_feature_test_df)
 
             logging.info(
                 "Applying preprocessing object on training and testing datasets.")
 
             # converting data in array to load array very quickly...
             # numpy array are superfast for ML
-            train_arr = np.c_[input_feature_train_df,
+            train_arr = np.c_[input_feature_train_arr,
                               np.array(target_feature_train_df)]
-            test_arr = np.c_[input_feature_test_df,
+            test_arr = np.c_[input_feature_test_arr,
                              np.array(target_feature_test_df)]
 
             # saving pickle file from preprocessor object..
             save_object(
                 file_path=self.data_transformation_config.preprocessor_obj_file_path,
-                obj=preprocessing_obj
+                obj=preprocessor
             )
 
             logging.info('Preprocessor pickle file saved')

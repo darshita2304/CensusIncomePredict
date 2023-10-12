@@ -1,7 +1,9 @@
 # Basic Import
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+
 from src.exception import CustomException
 from src.logger import logging
 
@@ -33,11 +35,12 @@ class ModelTrainer:
                 test_array[:, -1]
             )
 
+            print(X_train)
+            print(y_train)
+
             models = {
-                'LinearRegression': LinearRegression(),
-                'Lasso': Lasso(),
-                'Ridge': Ridge(),
-                'Elasticnet': ElasticNet()
+                'LogisticRegression': LogisticRegression(),
+                'DecisionTreeClassifier': DecisionTreeClassifier(),
             }
 
             model_report: dict = evaluate_model(
@@ -58,11 +61,11 @@ class ModelTrainer:
             best_model = models[best_model_name]
 
             print(
-                f'Best Model Found , Model Name : {best_model_name} , R2 Score : {best_model_score}')
+                f'Best Model Found , Model Name : {best_model_name} , Accuracy Score : {best_model_score}')
             print(
                 '\n====================================================================================\n')
             logging.info(
-                f'Best Model Found , Model Name : {best_model_name} , R2 Score : {best_model_score}')
+                f'Best Model Found , Model Name : {best_model_name} , Accuracy Score : {best_model_score}')
 
             save_object(
                 file_path=self.model_trainer_config.trained_model_file_path,

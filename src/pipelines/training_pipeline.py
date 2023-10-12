@@ -18,3 +18,4 @@ if __name__ == "__main__":
         train_data_path, test_data_path)
     model_trainer = ModelTrainer()
     model_trainer.initate_model_training(train_arr, test_arr)
+
