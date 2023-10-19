@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+
+<style>
+    .navbar-text h1 {
+        color: #fff;
+        font-size: 30px;
+        align-content: center;
+    }
+    
+    body {
+        background-color: grey;
+    }
+    
+    form {
+        margin-top: 50px;
+        margin: auto;
+        width: 50%;
+    }
+    
+    .result {
+        margin: auto;
+        width: 50%;
+        border: 1px solid #ccc;
+        background-color: grey;
+        color: #fff;
+        padding: 10px;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+        transition: 0.3s;
+        ;
+    }
+</style>
+
+<head>
+    <title>House Price Prediction</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-light bg-dark">
+        <span class="navbar-text">
+            <h1>Census Income Predictor</h1>
+        </span>
+    </nav>
+
+
+    <div class="container">
+    <form action="{{ url_for('predict_datapoint') }}" method="POST">
+        <div class="form-group">                       
+            
+
+            <div class="row">
+                <div class="col-6 col-md-4">
+                    <br>Age:<br>
+                    <input type="text" id="age" name="age" placeholder="Enter Age value (Number)" type="number" class="form-control" required>
+            
+                </div>
+                <div class="col-6 col-md-4">
+                    <br>Hours per week:<br>
+                    <input type="text" id="hours_per_week" name="hours_per_week" placeholder="Enter hours_per_week value" type="number" class="form-control" required>
+            
+                </div>
+                <div class="col-6 col-md-4">
+                    <br>fnlwgt:<br>
+                    <input type="text" id="fnlwgt" name="fnlwgt" placeholder="Enter fnlwgt value (int)" type="number" class="form-control" required>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-6">
+                    <br>Education:<br>
+                    <select id="education" name="education" class="form-control">
+                        <option value="13">Bachelors</option>
+                        <option value="9">HS-grad</option>
+                        <option value="7">11th</option>
+                        <option value="14">Masters</option>
+                        <option value="5">9th</option>
+                        <option value="10">Some-college</option>
+                        <option value="12">Assoc-acdm</option>
+                        <option value="11">Assoc-voc</option>
+                        <option value="4">7th-8th</option>
+                        <option value="16">Doctorate</option>
+                        <option value="15">Prof-school</option>
+                        <option value="3">5th-6th</option>
+                        <option value="6">10th</option>
+                        <option value="2">1st-4th</option>
+                        <option value="1">Preschool</option>
+                        <option value="8">12th</option>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <br>Occupation:<br>
+                    <select id="occupation" name="occupation" class="form-control">
+                        <option value="Adm-clerical">Adm-clerical</option>
+                        <option value="Exec-managerial">Exec-managerial</option>
+                        <option value="Handlers-cleaners">Handlers-cleaners</option>
+                        <option value="Prof-specialty">Prof-specialty</option>
+                        <option value="Other-service">Other-service</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Tech-support">Tech-support</option>
+                        <option value="Transport-moving">Transport-moving</option>
+                        <option value="Craft-repair">Craft-repair</option>
+                        <option value="Armed-Forces">Armed-Forces</option>
+                        <option value="Farming-fishing">Farming-fishing</option>
+                        <option value="Tech-support">Tech-support</option>
+                        <option value="Protective-serv">Protective-serv</option>
+                        <option value="Priv-house-serv">Priv-house-serv</option>
+                        <option value="NotAppl">NotAppl</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <br>Capital Gain:<br>
+                    <input type="text" id="capital_gain" name="capital_gain" placeholder="Enter capital_gain value (Number)" type="number" class="form-control" required>
+                </div>
+                <div class="col-6">
+                    <br>Capital Loss:<br>
+                    <input type="text" id="capital_loss" name="capital_loss" placeholder="Enter capital_loss value (Number)" type="number" class="form-control" required>
+                </div>
+            </div>           
+            
+            <div class="row">
+                <div class="col-6">
+                    <br>Workclass::<br>
+                    <select id="workclass" name="workclass" class="form-control">
+                        <option value="State-gov">State-gov</option>
+                        <option value="Self-emp-not-inc">Self-emp-not-inc</option>
+                        <option value="Private">Private</option>
+                        <option value="Federal-gov">Federal-gov</option>
+                        <option value="Local-gov">Local-gov</option>
+                        <option value="Jobless">Jobless</option>
+                        <option value="Self-emp-inc">Self-emp-inc</option>
+                        <option value="Without-pay">Without-pay</option>
+                        <option value="Never-worked">Never-worked</option>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <br>Relationship:<br>
+                    <select id="relationship" name="relationship" class="form-control">
+                        <option value="Not-in-family">Not-in-family</option>
+                        <option value="Husband">Husband</option>
+                        <option value="Wife">Wife</option>
+                        <option value="Own-child">Own-child</option>
+                        <option value="Unmarried">Unmarried</option>
+                        <option value="Other-relative">Other-relative</option>
+
+                    </select>
+                </div>
+            </div>      
+            
+            
+            <br>
+            <input type="submit" value="Submit" class="btn btn-primary">
+
+        </div>
+
+    </form>
+    </div>
+
+    <br>
+
+    <div class="result" align="center">
+        <h3>Predicted Income:</h3>
+        <p style="font-size:30px">{{ result }}</p>    
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+</body>
+
+</html>

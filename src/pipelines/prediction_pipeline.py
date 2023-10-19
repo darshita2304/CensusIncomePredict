@@ -18,7 +18,9 @@ class PredictPipeline:
             preprocessor = load_object(preprocessor_path)
             model = load_object(model_path)
 
+            logging.info("scaling.......")
             data_scaled = preprocessor.transform(features)
+            logging.info(data_scaled)
 
             pred = model.predict(data_scaled)
             return pred
@@ -30,41 +32,39 @@ class PredictPipeline:
 
 class CustomData:
     def __init__(self,
-                 Delivery_person_Age: float,
-                 Delivery_person_Ratings: float,
-                 Vehicle_condition: float,
-                 multiple_deliveries: float,
-                 distance: float,
-                 Weather_conditions: str,
-                 Road_traffic_density: str,
-                 City: str
+                 age: float,
+                 workclass: str,
+                 education: int,
+                 fnlwgt: int,
+                 occupation: str,
+                 relationship: str,
+                 capital_gain: float,
+                 capital_loss: float,
+                 hours_per_week: float
                  ):
 
-        self.Delivery_person_Age = Delivery_person_Age
-        self.Delivery_person_Ratings = Delivery_person_Ratings
-        self.Weather_conditions = Weather_conditions
-        self.Road_traffic_density = Road_traffic_density
-        self.Vehicle_condition = Vehicle_condition
-        # self.Type_of_order = Type_of_order,
-        self.multiple_deliveries = multiple_deliveries
-        self.City = City
-        self.distance = distance
+        self.age = age
+        self.workclass = workclass
+        self.education = education
+        self.occupation = occupation
+        self.fnlwgt = fnlwgt
+        self.relationship = relationship
+        self.capital_gain = capital_gain
+        self.capital_loss = capital_loss
+        self.hours_per_week = hours_per_week
 
     def get_data_as_dataframe(self):
         try:
             custom_data_input_dict = {
-                # Delivery_person_Age,Delivery_person_Ratings,Weather_conditions,Road_traffic_density,Vehicle_condition,Type_of_order,multiple_deliveries,City,distance,time_diff_minutes,Time_taken (min)
-
-                'Delivery_person_Age': [self.Delivery_person_Age],
-                'Delivery_person_Ratings': [self.Delivery_person_Ratings],
-                'Weather_conditions': [self.Weather_conditions],
-                'Road_traffic_density': [self.Road_traffic_density],
-                'Vehicle_condition': [self.Vehicle_condition],
-                # 'Type_of_order': [self.Type_of_order],
-                'multiple_deliveries': [self.multiple_deliveries],
-                'City': [self.City],
-                'distance': [self.distance]
-                # 'time_diff_minutes': [self.time_diff_minutes]
+                'age': [self.age],
+                'workclass': [self.workclass],
+                'education-num': [self.education],
+                'fnlwgt': [self.fnlwgt],
+                'occupation': [self.occupation],
+                'relationship': [self.relationship],
+                'capital-gain': [self.capital_gain],
+                'capital-loss': [self.capital_loss],
+                'hours-per-week': [self.hours_per_week]
 
             }
             df = pd.DataFrame(custom_data_input_dict)
