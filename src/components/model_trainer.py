@@ -3,6 +3,9 @@ import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+
 
 from src.exception import CustomException
 from src.logger import logging
@@ -40,7 +43,9 @@ class ModelTrainer:
 
             models = {
                 'LogisticRegression': LogisticRegression(),
-                'DecisionTreeClassifier': DecisionTreeClassifier(),
+                'DecisionTreeClassifier': DecisionTreeClassifier(max_depth=6, min_samples_leaf=1, min_samples_split=4), # hyper parameter selection based on experimental features in jupyternotebook
+                'KNeighborsClassifier': KNeighborsClassifier(),
+                'SVC': SVC(gamma='auto'),
             }
 
             model_report: dict = evaluate_model(
