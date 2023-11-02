@@ -3,7 +3,8 @@ shap
 pandas
 flask
 matplotlib
-scikit-learn
+scikit-learn==1.2.2
 seaborn
 setuptools
 pytimeparse
+cassandra-driver
