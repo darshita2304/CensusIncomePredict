@@ -2,9 +2,12 @@ import os
 import sys
 from src.logger import logging
 from src.exception import CustomException
+from src.components.dbconnect import DbConnect
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+
 
 # Inititalize the Data Ingestion Configuration...
 
@@ -17,6 +20,7 @@ class DataIngestionconfig:
 
 # create a class for Data Ingestion
 
+
 class DataIngestion:
     def __init__(self):
         self.ingestion_config = DataIngestionconfig()
@@ -24,8 +28,15 @@ class DataIngestion:
     def initiate_data_ingestion(self):
         logging.info("Data Ingestion methods starts..")
         try:
-            df = pd.read_csv(os.path.join(
+            df1 = pd.read_csv(os.path.join(
                 "notebooks", "income_cleaned.csv"))
+
+            obj = DbConnect()
+            df2 = pd.DataFrame(obj.load_data())
+            df = df1
+            logging.info(df1)
+            logging.info("df22222222222222222222222222222222")
+            logging.info(df2)
 
             logging.info("DataSet read as Pandas Dataframe")
 

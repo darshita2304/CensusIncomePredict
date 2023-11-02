@@ -121,7 +121,7 @@ class DataTransformation():
             preprocessor = self.get_data_transformation_object()  # this fn is within class
 
             target_column_name = 'fiftyplus'
-
+            
             # dropping two very less corelated columns along with target..
             drop_columns = [target_column_name,
                             'education', 'sex', 'fnlwgt', 'race', 'marital-status', 'native-country']

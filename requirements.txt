@@ -7,4 +7,6 @@ scikit-learn
 seaborn
 setuptools
 pytimeparse
+cassandra-driver
+
 -e .
