@@ -29,11 +29,12 @@ class DataIngestion:
         logging.info("Data Ingestion methods starts..")
         try:
             df1 = pd.read_csv(os.path.join(
-                "notebooks", "income_cleaned.csv"))
+                "notebooks", "income_cleaned.csv"))  # data coming from csv pregenerated...
 
-            obj = DbConnect()
-            df2 = pd.DataFrame(obj.load_data())
-            df = df1
+            obj = DbConnect()  # casandra db connection...
+            df2 = pd.DataFrame(obj.load_data())  # data coming from database
+
+            df = df2
             logging.info(df1)
             logging.info("df22222222222222222222222222222222")
             logging.info(df2)

@@ -74,8 +74,8 @@ class DataTransformation():
             #                                                 cat_pipeline),
             #                                                ("scale_pipeline", scale_pipeline)])
 
-            numeric_features = ['age', 'fnlwgt', 'education-num',
-                                'capital-gain', 'capital-loss', 'hours-per-week']
+            numeric_features = ['age', 'fnlwgt', 'education_num',
+                                'capital_gain', 'capital_loss', 'hours_per_week']
             numeric_transformer = Pipeline(
                 steps=[("imputer", SimpleImputer(strategy="median")),
                        ("scaler", StandardScaler())]
@@ -121,10 +121,10 @@ class DataTransformation():
             preprocessor = self.get_data_transformation_object()  # this fn is within class
 
             target_column_name = 'fiftyplus'
-            
+
             # dropping two very less corelated columns along with target..
             drop_columns = [target_column_name,
-                            'education', 'sex', 'fnlwgt', 'race', 'marital-status', 'native-country']
+                            'education', 'sex', 'fnlwgt', 'race', 'marital_status', 'native_country']
 
             target_feature_train_df = train_df[target_column_name]
             train_df.drop(columns=drop_columns, axis=1)

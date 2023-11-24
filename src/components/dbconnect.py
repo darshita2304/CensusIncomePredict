@@ -54,8 +54,8 @@ class DbConnect:
         return results
 
 
-# if __name__ == "__main__":
-#     obj = DbConnect()
-#     results = obj.load_data()
-#     for row in results:
-#         print(row)
+if __name__ == "__main__":
+    obj = DbConnect()
+    results = obj.load_data()
+    for row in results:
+        print(row)
