@@ -59,13 +59,13 @@ class CustomData:
             custom_data_input_dict = {
                 'age': [self.age],
                 'workclass': [self.workclass],
-                'education-num': [self.education],
+                'education_num': [self.education],
                 'fnlwgt': [self.fnlwgt],
                 'occupation': [self.occupation],
                 'relationship': [self.relationship],
-                'capital-gain': [self.capital_gain],
-                'capital-loss': [self.capital_loss],
-                'hours-per-week': [self.hours_per_week]
+                'capital_gain': [self.capital_gain],
+                'capital_loss': [self.capital_loss],
+                'hours_per_week': [self.hours_per_week]
 
             }
             df = pd.DataFrame(custom_data_input_dict)
