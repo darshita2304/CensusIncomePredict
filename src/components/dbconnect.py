@@ -27,7 +27,7 @@ class DbConnect:
         logging.info(CLIENT_ID)
         auth_provider = PlainTextAuthProvider(CLIENT_ID, CLIENT_SECRET)
         self.cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
-        self.session = self.cluster.connect('keyspace_census')
+        self.session = self.cluster.connect('keyspace_ci')
 
         row = self.session.execute(
             "select release_version from system.local").one()
@@ -39,7 +39,7 @@ class DbConnect:
             logging.info("DBConnect found an error...")
 
     def load_data(self):
-        query = "SELECT * FROM income_cleaned;"
+        query = "SELECT * FROM income_cleaned;;"
 
         results = self.session.execute(query)
 

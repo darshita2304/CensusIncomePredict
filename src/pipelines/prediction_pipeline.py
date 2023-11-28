@@ -19,6 +19,7 @@ class PredictPipeline:
             model = load_object(model_path)
 
             logging.info("scaling.......")
+            logging.info(features)
             data_scaled = preprocessor.transform(features)
             logging.info(data_scaled)
 
